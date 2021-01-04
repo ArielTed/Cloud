@@ -12,10 +12,6 @@ function RU1Query() {
     return { championName, value };
   }
 
-  useEffect(() => {
-
-  }, [rows])
-
   const handleCardClick = async () => {
     setIsLoading(true);
     setShowResult(showResult => !showResult);
@@ -29,7 +25,7 @@ function RU1Query() {
         data.map((e, i) => {
           setRows(rows => [...rows, createData(e.name, e.id)])
         })
-      } 
+      }
     }
     catch (err) {
       setIsLoading(false); 

@@ -6,10 +6,11 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-export const runRU1Query = async (username, password) => {
+export const runRU1Query = async () => {
   return axios({
-    method: 'get',
-    url: `${baseURL}/users`,
+    method: 'post',
+    url: `${baseURL}/RU1`,
+    headers
   });
 } 
 
