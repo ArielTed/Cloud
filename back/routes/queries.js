@@ -52,12 +52,12 @@ router.post(`${baseURL}/RD2`, async (req, res) => {
           { $project: { version: 1, playingrate: { $divide: [{ $multiply: ["$played", 100] }, "$total"] } } },
           { $sort: { "version": -1 } }
         ]);
-        return res.status(200).json(playingRate);
+        return res.status(200).json({ playingRate });
       default:
         const banRate = await Matches.aggregate([
           { $group: { _id: { "version": "$version" }, version: { $first: "$version" }, matchid: { $addToSet: "$matchid" }, total: { $sum: 1 } } }
         ]);
-        return res.status(200).json(banRate);
+        return res.status(200).json({ banRate });
     }
   }
   catch (err) {
@@ -84,7 +84,7 @@ router.post(`${baseURL}/RD3`, async (req, res) => {
     projectOp2 = { $project: { "win_firstBlood": 1, "win_firstTower": 1, "win_firstDragon": 1, "win_firstAll": { $avg: ["$win_firstBlood", "$win_firstTower", "$win_firstDragon"] } } };
     groupOp = { $group: { _id: "null", "avg_win_firstBlood": { $avg: "$win_firstBlood" }, "avg_win_firstTower": { $avg: "$win_firstTower" }, "avg_win_firstDragon": { $avg: "$win_firstDragon" }, "avg_win_firstAll": { $avg: "$win_firstAll" } } };
     const response = await TeamStats.aggregate([projectOp, projectOp2, groupOp]);
-    return res.status(200).json(response);
+    return res.status(200).json({ response });
   }
   catch (err) {
     console.log(err);
@@ -100,7 +100,7 @@ router.post(`${baseURL}/RD4`, async (req, res) => {
       { $group: { _id: "$platformid", "duration": { $avg: "$duration" }, "avg_kills": { $avg: "$stats.kills" } } },
       { $project: { _id: 1, "duration": 1, "avg_kills": 1, "ratio_kill_per_second": { $divide: ["$avg_kills", "$duration"] } } }
     ]);
-    return res.status(200).json(response);
+    return res.status(200).json({ response });
   }
   catch (err) {
     console.log(err);
@@ -119,7 +119,7 @@ router.post(`${baseURL}/RU1`, async (req, res) => {
       { $group: { _id: "$participants.Champ", "value": { $sum: 1 } } },
       { $sort: { "value": -1 } }
     ]);
-    return res.status(200).json(response);
+    return res.status(200).json({ response });
   }
   catch (err) {
     console.log(err);
