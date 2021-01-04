@@ -43,5 +43,5 @@ groupByVersion1 = {$group : {
     }
 };
 
-
+//ban rate
 db.getCollection("Sample_Matches_v4").aggregate([groupByVersion1]);
