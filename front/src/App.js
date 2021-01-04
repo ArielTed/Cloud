@@ -1,8 +1,8 @@
 import { Route, Switch } from "react-router-dom";
 import HeaderNav from './Components/HeaderNav/HeaderNav';
 import WelcomePage from './Components/WelcomePage/WelcomePage';
-import UserQueries from './Components/QueriesPages/UserQueries';
-import DevQueries from './Components/QueriesPages/DevQueries';
+import UserQueries from './Components/QueriesPages/UserQueries/UserQueries';
+import DevQueries from './Components/QueriesPages/DevQueries/DevQueries';
 
 
 

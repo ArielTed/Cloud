@@ -1,5 +1,5 @@
 import React from 'react'
-import QueriesSelector from './QueriesSelector';
+import QueriesSelector from '../QueriesSelector';
 import './devQueries.css'
 
 function DevQueries() {

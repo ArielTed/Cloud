@@ -1,0 +1,11 @@
+.UserQueries {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 4rem; 
+}
+
+.Query_card {
+  max-width: 70rem;
+  cursor: pointer;
+}
