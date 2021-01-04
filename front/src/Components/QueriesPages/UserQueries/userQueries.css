@@ -1,11 +1,17 @@
 .UserQueries {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   margin-top: 4rem; 
 }
 
 .Query_card {
   max-width: 70rem;
   cursor: pointer;
+}
+
+.result_tableCell {
+  padding-left: -6rem;
+}
+.tableCell_title {
+  font-weight: 700;
 }

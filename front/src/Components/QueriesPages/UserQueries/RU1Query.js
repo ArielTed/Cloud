@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 import { runRU1Query } from '../../../utils/QueriesAPI';
 
+import './userQueries.css'
 
 function RU1Query() {
   const [showResult, setShowResult] = useState(false);
@@ -22,8 +23,8 @@ function RU1Query() {
 
       if (status === 200) {
         setIsLoading(false);
-        data.map((e, i) => {
-          setRows(rows => [...rows, createData(e.name, e.id)])
+        data.response.map((e, i) => {
+          setRows(rows => [...rows, createData(e._id, e.value)])
         })
       }
     }
@@ -41,7 +42,6 @@ function RU1Query() {
         Which champions played as “jungler” most often manage to secure the first dragon?
         </Typography>
       </CardContent>
-    </Card>
 
     { isLoading && showResult &&
       <CircularProgress />
@@ -49,28 +49,26 @@ function RU1Query() {
     
     { !isLoading && showResult && 
       <TableContainer component={Paper}>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">Champ Name</TableCell>
-            <TableCell align="right">Value</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell>{row.championName}</TableCell>
-              <TableCell>{row.value}</TableCell>
-              <TableCell>{row.carbs}</TableCell>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" className="tableCell_title">Champion Name</TableCell>
+              <TableCell align="center">Value</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {rows.slice(0, 5).map((row) => (
+              <TableRow key={row.championName}>
+                <TableCell align="center" className="result_tableCell" component="th" scope="row"> {row.championName}</TableCell>
+                <TableCell align="center">{row.value}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     }
+    </Card>
+
   </div>
   )
 }
