@@ -1,27 +1,40 @@
-import React, { useState } from 'react'
-import { Container, Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { runRD1Query } from '../../../utils/QueriesAPI';
+import React, { useEffect, useState } from 'react'
+import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import { runRU1Query } from '../../../utils/QueriesAPI';
 
 
 function RU1Query() {
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState(null);
+  const [rows, setRows] = useState([]);
 
   function createData(championName, value) {
     return { championName, value };
   }
 
-  const rows = [
-    createData('Ziggs', 14.2),
-    createData('Zougs', 237),
-  ];
+  useEffect(() => {
 
-  const handleCardClick = () => {
+  }, [rows])
+
+  const handleCardClick = async () => {
     setIsLoading(true);
     setShowResult(showResult => !showResult);
 
+    try {
+      const response = await runRU1Query();
+      const { status, data } = response;
 
+      if (status === 200) {
+        setIsLoading(false);
+        data.map((e, i) => {
+          setRows(rows => [...rows, createData(e.name, e.id)])
+        })
+      } 
+    }
+    catch (err) {
+      setIsLoading(false); 
+      console.log(err)
+    }
   }
 
   return(

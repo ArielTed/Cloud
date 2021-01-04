@@ -8,13 +8,8 @@ const headers = {
 
 export const runRU1Query = async (username, password) => {
   return axios({
-    method: 'post',
-    url: `${baseURL}/api/auth/login`,
-    headers: headers,
-    data: {
-      username,
-      password
-    }
+    method: 'get',
+    url: `${baseURL}/users`,
   });
 } 
 
