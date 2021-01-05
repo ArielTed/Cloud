@@ -19,8 +19,5 @@
     "helmet": "^4.2.0",
     "mongoose": "^5.11.8",
     "tunnel-ssh": "^4.1.4"
-  },
-  "engines": {
-    "node": "15.3.0"
   }
 }
