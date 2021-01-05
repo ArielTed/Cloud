@@ -9,6 +9,7 @@
   max-width: 73rem;
   margin-top: 1rem;
   cursor: pointer;
+  margin-bottom: 2rem;
 }
 .Query_card:hover {
   transform: translateX(3px) translateY(-2px);  

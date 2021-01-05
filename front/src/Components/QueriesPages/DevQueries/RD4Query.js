@@ -23,7 +23,6 @@ function RD4Query() {
 
       if (status === 200) {
         setIsLoading(false);
-        console.log(data.response[0])
         setRows(rows => [...rows, createData(data.response[0]._id, data.response[0].duration, data.response[0].avg_kills, data.response[0].ratio_kill_per_second)])
       }
     }

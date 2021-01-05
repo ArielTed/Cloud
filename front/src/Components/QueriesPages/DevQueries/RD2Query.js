@@ -32,7 +32,6 @@ function RD2Query() {
           })
         } else {
           data.playingRate.map((e, i) => {
-            console.log(e)
             setRows(rows => [...rows, createData(e.version, e.playingrate)])
           }) 
         }
