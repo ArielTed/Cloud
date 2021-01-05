@@ -5,8 +5,12 @@
 }
 
 .Query_card {
-  max-width: 70rem;
+  max-width: 73rem;
+  margin-top: 1rem;
   cursor: pointer;
+}
+.Query_card:hover {
+  transform: translateX(3px) translateY(-2px);  
 }
 
 .result_tableCell {

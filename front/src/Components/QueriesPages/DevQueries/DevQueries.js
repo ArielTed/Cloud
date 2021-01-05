@@ -1,18 +1,25 @@
-import React from 'react'
-import QueriesSelector from '../QueriesSelector';
+import React from 'react';  
+import { Container } from '@material-ui/core';
+import RD1Query from './RD1Query';
+import RD2Query from './RD2Query';
+import RD3Query from './RD3Query';
+import RD4Query from './RD4Query';
+
+
+
 import './devQueries.css'
 
 function DevQueries() {
   return (
-    <div className="DevQueries">
-      <div className="QueriesSelector_div">
-        <QueriesSelector />
+    <Container>
+      <h1 style={{textAlign: 'center'}}>Data Analyst Queries</h1>
+      <div className="UserQueries">
+        <RD1Query />
+        <RD2Query />
+        <RD3Query />
+        <RD4Query />
       </div>
-
-      <div className="Queries_resultsDiv">
-        User
-      </div>
-    </div>
+    </Container>
   )
 }
 

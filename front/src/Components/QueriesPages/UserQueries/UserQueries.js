@@ -5,10 +5,9 @@ import './userQueries.css'
 function UserQueries() {
   return (
     <Container>
+      <h1 style={{textAlign: 'center'}}>User Queries</h1>
       <div className="UserQueries">
         <RU1Query />
-        <h2>Query 2</h2>
-        <h2>Query 3</h2>
       </div>
     </Container>
   )

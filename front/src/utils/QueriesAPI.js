@@ -14,14 +14,48 @@ export const runRU1Query = async () => {
   });
 } 
 
-// export const runRU2Query = async (username, password) => {
-//   return axios({
-//     method: 'post',
-//     url: `${baseURL}/api/auth/login`,
-//     headers: headers,
-//     data: {
-//       username,
-//       password
-//     }
-//   });
-// } 
+export const runRU2Query = async (championName, role) => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/api/auth/login`,
+    headers: headers,
+    data: {
+      championName,
+      role
+    }
+  });
+} 
+
+
+export const runRD1Query = async () => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/RD1`,
+    headers
+  });
+} 
+export const runRD2Query = async (championName, answerType) => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/RD2`,
+    headers,
+    data: {
+      championName,
+      answerType
+    }
+  });
+} 
+export const runRD3Query = async () => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/RD3`,
+    headers
+  });
+} 
+export const runRD4Query = async () => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/RD4`,
+    headers
+  });
+} 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import { runRU1Query } from '../../../utils/QueriesAPI';
+import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import { runRU2Query } from '../../../utils/QueriesAPI';
 
 import './userQueries.css'
 
-function RU1Query() {
+function RU2Query() {
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rows, setRows] = useState([]);
@@ -18,7 +18,7 @@ function RU1Query() {
     setShowResult(showResult => !showResult);
 
     try {
-      const response = await runRU1Query();
+      const response = await runRU2Query();
       const { status, data } = response;
 
       if (status === 200) {
@@ -36,11 +36,11 @@ function RU1Query() {
 
   return(
   <div className="Query">
-    <h4>RU1</h4>
+    <h4>RU2</h4>
     <Card className="Query_card" onClick={() => handleCardClick()}>
       <CardContent>
         <Typography variant="h6" component="h6">
-        Which champions played as “jungler” most often manage to secure the first dragon?
+        How to play against a given champion and its position? 
         </Typography>
       </CardContent>
 
