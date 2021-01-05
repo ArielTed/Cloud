@@ -13,19 +13,22 @@ router.post(`${baseURL}/RD1`, async (req, res) => {
       { $unwind: "$participants" },
       { $group: { _id: "$participants.Champ", "total_played": { $sum: 1 }, "total_win": { $sum: { $cond: ["$win", 1, 0] } } } },
       { $project: { _id: 1, "popularity": { $multiply: [{ $divide: ["$total_played", teamStatsCount * 5] }, 100] } } },
-      { $sort: { "popularity": -1 } }
+      { $sort: { "popularity": -1 } },
+      { $limit: 6 }
     ]);
     const winRate = await TeamStats.aggregate([
       { $unwind: "$participants" },
       { $group: { _id: "$participants.Champ", "total_played": { $sum: 1 }, "total_win": { $sum: { $cond: ["$win", 1, 0] } } } },
       { $project: { _id: 1, "win_rate": { $multiply: [{ $divide: ["$total_win", "$total_played"] }, 100] } } },
-      { $sort: { "win_rate": -1 } }
+      { $sort: { "win_rate": -1 } },
+      { $limit: 6 }
     ]);
     const banRatio = TeamStats.aggregate([
       { $unwind: "$bans" },
       { $group: { _id: "$bans", "total_banned": { $sum: 1 } } },
       { $project: { _id: 1, "ban_ratio": { $multiply: [{ $divide: ["$total_banned", teamStatsCount * 3] }, 100] } } },
-      { $sort: { "ban_ratio": -1 } }
+      { $sort: { "ban_ratio": -1 } },
+      { $limit: 6 }
     ]);
     return res.status(200).json({ popularity, winRate, banRatio });
   }
@@ -50,12 +53,14 @@ router.post(`${baseURL}/RD2`, async (req, res) => {
           { $project: { "version": 1, "match": 1, "total": 1 } },
           { $group: { _id: { "version": "$version" }, version: { $first: "$version" }, total: { $first: "$total" }, played: { $sum: 1 }, } },
           { $project: { version: 1, playingrate: { $divide: [{ $multiply: ["$played", 100] }, "$total"] } } },
-          { $sort: { "version": -1 } }
+          { $sort: { "version": -1 } },
+          { $limit: 6 }
         ]);
         return res.status(200).json({ playingRate });
       default:
         const banRate = await Matches.aggregate([
-          { $group: { _id: { "version": "$version" }, version: { $first: "$version" }, matchid: { $addToSet: "$matchid" }, total: { $sum: 1 } } }
+          { $group: { _id: { "version": "$version" }, version: { $first: "$version" }, matchid: { $addToSet: "$matchid" }, total: { $sum: 1 } } },
+          { $limit: 6 }
         ]);
         return res.status(200).json({ banRate });
     }
@@ -68,22 +73,12 @@ router.post(`${baseURL}/RD2`, async (req, res) => {
 
 router.post(`${baseURL}/RD3`, async (req, res) => {
   try {
-    projectOp = {
-      $project: {
-        "win_firstBlood": {
-          $cond: { if: { $eq: ["$win", "$firstblood"] }, then: 1, else: 0 }
-        },
-        "win_firstTower": {
-          $cond: { if: { $eq: ["$win", "$firsttower"] }, then: 1, else: 0 }
-        },
-        "win_firstDragon": {
-          $cond: { if: { $eq: ["$win", "$firstdragon"] }, then: 1, else: 0 }
-        }
-      }
-    };
-    projectOp2 = { $project: { "win_firstBlood": 1, "win_firstTower": 1, "win_firstDragon": 1, "win_firstAll": { $avg: ["$win_firstBlood", "$win_firstTower", "$win_firstDragon"] } } };
-    groupOp = { $group: { _id: "null", "avg_win_firstBlood": { $avg: "$win_firstBlood" }, "avg_win_firstTower": { $avg: "$win_firstTower" }, "avg_win_firstDragon": { $avg: "$win_firstDragon" }, "avg_win_firstAll": { $avg: "$win_firstAll" } } };
-    const response = await TeamStats.aggregate([projectOp, projectOp2, groupOp]);
+    const response = await TeamStats.aggregate([
+      { $project: { "win_firstBlood": { $cond: { if: { $eq: ["$win", "$firstblood"] }, then: 1, else: 0 } }, "win_firstTower": { $cond: { if: { $eq: ["$win", "$firsttower"] }, then: 1, else: 0 } }, "win_firstDragon": { $cond: { if: { $eq: ["$win", "$firstdragon"] }, then: 1, else: 0 } } } },
+      { $project: { "win_firstBlood": 1, "win_firstTower": 1, "win_firstDragon": 1, "win_firstAll": { $avg: ["$win_firstBlood", "$win_firstTower", "$win_firstDragon"] } } },
+      { $group: { _id: "null", "avg_win_firstBlood": { $avg: "$win_firstBlood" }, "avg_win_firstTower": { $avg: "$win_firstTower" }, "avg_win_firstDragon": { $avg: "$win_firstDragon" }, "avg_win_firstAll": { $avg: "$win_firstAll" } } },
+      { $limit: 6 }
+    ]);
     return res.status(200).json({ response });
   }
   catch (err) {
@@ -98,7 +93,8 @@ router.post(`${baseURL}/RD4`, async (req, res) => {
       lookup = { $lookup: { from: "stats", "localField": "matchid", "foreignField": "matchid", as: "stats" } },
       { $unwind: "$stats" },
       { $group: { _id: "$platformid", "duration": { $avg: "$duration" }, "avg_kills": { $avg: "$stats.kills" } } },
-      { $project: { _id: 1, "duration": 1, "avg_kills": 1, "ratio_kill_per_second": { $divide: ["$avg_kills", "$duration"] } } }
+      { $project: { _id: 1, "duration": 1, "avg_kills": 1, "ratio_kill_per_second": { $divide: ["$avg_kills", "$duration"] } } },
+      { $limit: 6 }
     ]);
     return res.status(200).json({ response });
   }
@@ -117,7 +113,8 @@ router.post(`${baseURL}/RU1`, async (req, res) => {
       { $match: { "participants.champ_commonLane": "JUNGLE" } },
       { $project: { "participants.Champ": 1 } },
       { $group: { _id: "$participants.Champ", "value": { $sum: 1 } } },
-      { $sort: { "value": -1 } }
+      { $sort: { "value": -1 } },
+      { $limit: 6 }
     ]);
     return res.status(200).json({ response });
   }
@@ -140,7 +137,6 @@ router.post(`${baseURL}/RU2`, async (req, res) => {
     const groupByMatchId = { $group: { _id: keyGroup, matchid: { $first: "$matchid" }, champteam: { $first: "$OpTeam" }, teamid: { $first: "$Team_ID" }, champ: { $addToSet: "$opponent.Champ" }, kills: { $sum: "$opponent.kills" }, deaths: { $sum: "$opponent.deaths" }, assists: { $sum: "$opponent.assists" }, items: { $addToSet: "$opponent.items" }, } };
     const projectGrpStat = { $project: { "matchid": "$_id.matchid", _id: 0, "champ": "$champ", "kills": "$kills", "deaths": "$deaths", "assists": "$assists", "ishere": { $cond: { if: { "$eq": ["$teamid", "$champteam"] }, then: true, else: false } }, "items": "$items", "teamid": 1, "champteam": 1, "score": { $subtract: ["$kills", "$deaths"] }, } };
     const sortBool = { $sort: { "matchid": 1, "ishere": 1 } };
-    const lastkeyGroup = { "matchid": "$matchid" };
     const lastgroupBy = { $group: { _id: keyGroup, champ: { $first: "$champ" }, op_score: { $first: { "$toInt": "$score" } }, chmp_score: { $last: { "$toInt": "$score" } }, items: { $first: "$items" }, } };
     const lastproject = { $project: { _id: 0, "champ": 1, items: 1, "dif": { $subtract: ["$op_score", "$chmp_score"] }, "competitor": "tocheck" } };
     const restructure = { $project: { "champ": 1, "dif": 1, "competitor": { $cond: { if: { "$and": [{ "$eq": ["$competitor", "tocheck"] }, { "$lt": ["$dif", -1] }] }, then: "weak", else: { $cond: { if: { "$gt": ["$dif", 1] }, then: "strong", else: "good" } } } }, "items": "$items" } };
@@ -162,14 +158,16 @@ router.post(`${baseURL}/RU2`, async (req, res) => {
       matches = await TeamStats.aggregate([
         unwindOp, matchChamp, projectChamp, lookupOpponent, unwindPlayers, matchPlayers, projectPlayers,
         groupByMatchId, projectGrpStat, sortBool, lastgroupBy, lastproject, restructure,
-        countGroupBy, countproject, countSort
+        countGroupBy, countproject, countSort,
+        { $limit: 6 }
       ]);
     }
     else {
       matches = await TeamStats.aggregate([
         unwindOp, matchChamp, projectChamp, lookupOpponent, unwindPlayers, matchPlayers, projectPlayers,
         groupByMatchId, projectGrpStat, sortBool, lastgroupBy, lastproject, restructure,
-        itemStrong, unwindlistoflist, unwindItems, unwindlistofitems, unwindItem, itemGroupBy, itemSort
+        itemStrong, unwindlistoflist, unwindItems, unwindlistofitems, unwindItem, itemGroupBy, itemSort,
+        { $limit: 6 }
       ]);
     }
     return res.status(200).json({ matches });
@@ -254,7 +252,8 @@ router.post(`${baseURL}/RU4`, async (req, res) => {
       { "$project": { "stat": { "$arrayElemAt": ["$stats", 0] } } },
       { $group: { _id: { "matchid": "$stat.matchid", "Team_ID": "$stat.Team_ID", "ChampRole": "$stat.champ_commonLane" }, "totaldmgobj": { "$sum": "$stat.dmgtoobj" }, champs: { "$addToSet": "$stat.Champ" }, } },
       { $group: { _id: { "champs": "$champs" }, champs: { "$first": "$champs" }, "totaldmgobj": { "$avg": "$totaldmgobj" } } },
-      sortDmg = { $sort: { "totaldmgobj": -1 } }
+      { $sort: { "totaldmgobj": -1 } },
+      { $limit: 6 }
     ]);
     return res.status(200).json({ teamSynergy });
   }
