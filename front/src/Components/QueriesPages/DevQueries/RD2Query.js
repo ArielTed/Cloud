@@ -18,6 +18,7 @@ function RD2Query() {
 
   const handleExecuteQuery = async () => {
     setIsLoading(true);
+    setRows([]);
     
     try {
       const response = await runRD2Query(championName, answerType);
@@ -28,10 +29,11 @@ function RD2Query() {
         if (data.banRate) {
           data.banRate.map((e, i) => {
             setRows(rows => [...rows, createData(e.version, e.total)])
-          })          
+          })
         } else {
           data.playingRate.map((e, i) => {
-            setRows(rows => [...rows, createData(e.version, e.total)])
+            console.log(e)
+            setRows(rows => [...rows, createData(e.version, e.playingrate)])
           }) 
         }
         
@@ -65,7 +67,7 @@ function RD2Query() {
       </CardContent>
     
     { showInput &&
-      <form noValidate autoComplete="off">
+      <form noValidate autoComplete="off" className="queryForm">
         <div>
           <TextField 
           label="Champion Name" 
@@ -94,7 +96,11 @@ function RD2Query() {
           <TableHead>
             <TableRow>
               <TableCell align="center" className="tableCell_title">Version</TableCell>
-              <TableCell align="center">Nb of Bans</TableCell>
+              { answerType === 'playingRate' ? 
+                <TableCell align="center">playing Rate</TableCell>
+                : <TableCell align="center">Number of bans</TableCell>  
+              }
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -103,7 +109,7 @@ function RD2Query() {
                 <TableCell align="center" className="result_tableCell" component="th" scope="row">
                   {row.version}
                 </TableCell>
-                <TableCell align="center">{row.nbBans}</TableCell>
+                <TableCell align="center">{row.nbBans}</TableCell>                
               </TableRow>
             ))}
           </TableBody>
