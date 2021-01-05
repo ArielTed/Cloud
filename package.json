@@ -2,5 +2,8 @@
   "scripts": {
     "heroku-prebuild": "cd front && npm install && npm run build && cd .. && cd back && npm install",
     "start": "cd back && npm start"
+  },
+  "engines": {
+    "node": "15.3.0"
   }
 }
