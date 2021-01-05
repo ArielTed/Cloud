@@ -30,14 +30,14 @@ app.use(express.json());
 app.set('json spaces', 2);
 app.use(cors());
 app.use(helmet());
-app.use(express.static(path.join(__dirname, "../front", "build")));
+// app.use(express.static(path.join(__dirname, "../front", "build")));
 
 app.options('*', cors());
 
 app.use('/', queriesRoute);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../front", "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../front", "build", "index.html"));
+// });
 
 app.listen(PORT, () => console.log(`📡 Running on port ${PORT}`));
