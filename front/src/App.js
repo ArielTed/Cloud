@@ -16,7 +16,6 @@ const App = () => {
         <Route exact path="/" component={ WelcomePage } />
         <Route exact path="/user-queries" component={ UserQueries } />
         <Route exact path="/dev-queries" component={ DevQueries } />
-        {/*<Route exact path="/admin-panel" component={ UserQueries } />  */}
       </Switch>
     </div>
   );

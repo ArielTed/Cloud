@@ -18,11 +18,6 @@ function WelcomePage() {
           <Button variant="outlined" color="primary" onClick={() => history.push("dev-queries") }>
               Developper Queries
           </Button>
-          <br/>       
-          <Button variant="outlined" color="primary" onClick={() => history.push("admin-panel") }>
-              Admin Panel
-          </Button>
-
         </div>
       </div>
     </div>

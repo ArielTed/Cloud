@@ -25,9 +25,16 @@ function RD2Query() {
 
       if (status === 200) {
         setIsLoading(false);
-        data.banRate.map((e, i) => {
-          setRows(rows => [...rows, createData(e.version, e.total)])
-        })
+        if (data.banRate) {
+          data.banRate.map((e, i) => {
+            setRows(rows => [...rows, createData(e.version, e.total)])
+          })          
+        } else {
+          data.playingRate.map((e, i) => {
+            setRows(rows => [...rows, createData(e.version, e.total)])
+          }) 
+        }
+        
       }
     }
     catch (err) {
