@@ -24,7 +24,6 @@ function RU2Query() {
       const response = await runRU2Query(championName, role);
       const { status, data } = response;
       setIsLoading(false);
-      console.log(data)
       data.matches.map((e, i) => {
         setRows(rows => [...rows, createData(e.item, e.item_score)])
       })             

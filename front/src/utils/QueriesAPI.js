@@ -26,6 +26,14 @@ export const runRU2Query = async (championName, role) => {
   });
 } 
 
+export const runRU4Query = async () => {
+  return axios({
+    method: 'post',
+    url: `${baseURL}/RU4`,
+    headers
+  });
+} 
+
 
 export const runRD1Query = async () => {
   return axios({

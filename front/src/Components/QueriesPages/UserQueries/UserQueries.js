@@ -1,6 +1,7 @@
 import { Container } from '@material-ui/core';
 import RU1Query from '../UserQueries/RU1Query';
 import RU2Query from '../UserQueries/RU2Query';
+import RU4Query from '../UserQueries/RU4Query';
 import './userQueries.css'
 
 function UserQueries() {
@@ -10,6 +11,7 @@ function UserQueries() {
       <div className="UserQueries">
         <RU1Query />
         <RU2Query />
+        <RU4Query />
       </div>
     </Container>
   )
