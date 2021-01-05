@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@material-ui/core';
 import { runRU2Query } from '../../../utils/QueriesAPI';
 
 import './userQueries.css'
 
 function RU2Query() {
   const [showResult, setShowResult] = useState(false);
+  const [showInput, setShowInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [championName, setChampionName] = useState();
+  const [role, setRole] = useState();
   const [rows, setRows] = useState([]);
 
-  function createData(championName, value) {
-    return { championName, value };
+  function createData(item, item_score) {
+    return { item, item_score };
   }
 
-  const handleCardClick = async () => {
+  const handleExecuteQuery = async () => {
     setIsLoading(true);
-    setShowResult(showResult => !showResult);
-
+    setRows([]);
+    
     try {
-      const response = await runRU2Query();
+      const response = await runRU2Query(championName, role);
       const { status, data } = response;
-
-      if (status === 200) {
-        setIsLoading(false);
-        data.response.map((e, i) => {
-          setRows(rows => [...rows, createData(e._id, e.value)])
-        })
-      }
+      setIsLoading(false);
+      console.log(data)
+      data.matches.map((e, i) => {
+        setRows(rows => [...rows, createData(e.item, e.item_score)])
+      })             
     }
     catch (err) {
       setIsLoading(false); 
@@ -34,15 +35,48 @@ function RU2Query() {
     }
   }
 
+  const handleChampionChange = (event) => {
+    setChampionName(event.target.value);
+  };
+  const handleRoleChange = (event) => {
+    setRole(event.target.value);
+  };
+  const onCardClick = () => {
+    setShowInput(true);
+    setShowResult(showResult => !showResult)
+  }
+
   return(
   <div className="Query">
     <h4>RU2</h4>
-    <Card className="Query_card" onClick={() => handleCardClick()}>
+    <Card className="Query_card" onClick={onCardClick} >
       <CardContent>
         <Typography variant="h6" component="h6">
-        How to play against a given champion and its position? 
+          How to play against a given champion and its position? 
         </Typography>
       </CardContent>
+    
+    { showInput &&
+      <form noValidate autoComplete="off" className="queryForm">
+        <div>
+          <TextField 
+          label="Champion Name" 
+          placeholder="Ziggs, Warwick, Shyvana, ... " 
+          defaultValue="Ziggs"
+          style={{marginRight: '2rem', marginLeft: '1rem', marginBottom: '1rem'}} 
+          onChange={handleChampionChange} 
+          />
+          <TextField 
+          label="Role" 
+          placeholder="mid, bottom, top, ..." 
+          defaultValue="mid"
+          style={{marginRight: '2rem', marginBottom: '1rem'}} 
+          onChange={handleRoleChange} 
+          />
+          <Button variant="contained" onClick={() => handleExecuteQuery(championName, role)}>Run query</Button>
+        </div>
+      </form>
+    }
 
     { isLoading && showResult &&
       <CircularProgress />
@@ -53,15 +87,17 @@ function RU2Query() {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center" className="tableCell_title">Champion Name</TableCell>
-              <TableCell align="center">Value</TableCell>
+              <TableCell align="center" className="tableCell_title">Item</TableCell>
+              <TableCell align="center">Item Score</TableCell>  
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(0, 5).map((row) => (
-              <TableRow key={row.championName}>
-                <TableCell align="center" className="result_tableCell" component="th" scope="row"> {row.championName}</TableCell>
-                <TableCell align="center">{row.value}</TableCell>
+            {rows.map((row) => (
+              <TableRow key={row.item}>
+                <TableCell align="center" className="result_tableCell" component="th" scope="row">
+                  {row.item}
+                </TableCell>
+                <TableCell align="center">{row.item_score}</TableCell>                
               </TableRow>
             ))}
           </TableBody>
@@ -74,4 +110,4 @@ function RU2Query() {
   )
 }
 
-export default RU1Query
+export default RU2Query

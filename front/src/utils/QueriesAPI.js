@@ -17,8 +17,8 @@ export const runRU1Query = async () => {
 export const runRU2Query = async (championName, role) => {
   return axios({
     method: 'post',
-    url: `${baseURL}/api/auth/login`,
-    headers: headers,
+    url: `${baseURL}/RU2`,
+    headers,
     data: {
       championName,
       role
